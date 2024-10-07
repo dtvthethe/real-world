@@ -1,0 +1,29 @@
+import { Article } from 'src/article/article.entity';
+import { User } from 'src/user/user.entity';
+import { Entity, Column, PrimaryGeneratedColumn, CreateDateColumn, UpdateDateColumn, DeleteDateColumn, ManyToOne, JoinColumn } from 'typeorm';
+
+@Entity({ name: 'comments' })
+export class Comment {
+  @PrimaryGeneratedColumn()
+  id!: number;
+
+  @Column()
+  body!: string;
+
+  @ManyToOne(() => User, (user) => user.comments)
+  @JoinColumn({ name: 'author_id' })
+  author!: User;
+
+  @ManyToOne(() => Article, (article) => article.comments)
+  @JoinColumn({ name: 'article_id' })
+  article!: Article;
+
+  @CreateDateColumn({ name: 'created_date' })
+  createdDate!: Date;
+
+  @UpdateDateColumn({ name: 'updated_date' })
+  updatedDate!: Date;
+
+  @DeleteDateColumn({ name: 'deleted_date' })
+  deleteDate?: Date;
+}
