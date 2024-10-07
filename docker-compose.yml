@@ -1,0 +1,11 @@
+version: "3.9"
+services:
+  db:
+    image: mysql:8.0
+    environment:
+      - MYSQL_ROOT_PASSWORD=Aa@123456
+      - MYSQL_DATABASE=real-world
+    volumes:
+      - ./database:/var/lib/mysql
+    ports:
+      - 13306:3306
