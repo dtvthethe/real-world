@@ -1,5 +1,6 @@
 import { Article } from 'src/article/article.entity';
-import { Entity, Column, PrimaryGeneratedColumn, CreateDateColumn, UpdateDateColumn, DeleteDateColumn, ManyToOne } from 'typeorm';
+import { Entity, Column, PrimaryGeneratedColumn, CreateDateColumn, UpdateDateColumn, DeleteDateColumn, ManyToOne, ManyToMany, OneToMany } from 'typeorm';
+import { Comment } from './comment.entity';
 
 @Entity({ name: 'users' })
 export class User {
@@ -38,4 +39,10 @@ export class User {
 
   @ManyToOne(() => Article, (article) => article.author)
   articles?: Article[];
+
+  @ManyToMany(() => Article, (article) => article.userFavorites)
+  articleFavorites?: Article[];
+
+  @OneToMany(() => Comment, (comment) => comment.author)
+  comment?: Comment[];
 }
