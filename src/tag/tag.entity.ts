@@ -1,4 +1,5 @@
-import { Entity, Column, PrimaryGeneratedColumn, CreateDateColumn, UpdateDateColumn, DeleteDateColumn } from 'typeorm';
+import { Article } from 'src/article/article.entity';
+import { Entity, Column, PrimaryGeneratedColumn, CreateDateColumn, UpdateDateColumn, DeleteDateColumn, ManyToMany } from 'typeorm';
 
 @Entity({ name: 'tags' })
 export class Tag {
@@ -16,4 +17,7 @@ export class Tag {
 
   @DeleteDateColumn({ name: 'deleted_date' })
   deleteDate?: Date;
+
+  @ManyToMany(() => Article, (article) => article.tags)
+  articles: Article[];
 }

@@ -1,5 +1,7 @@
+import { Tag } from 'src/tag/tag.entity';
+import { Comment } from 'src/user/comment.entity';
 import { User } from 'src/user/user.entity';
-import { Entity, Column, PrimaryGeneratedColumn, CreateDateColumn, UpdateDateColumn, DeleteDateColumn, JoinColumn, ManyToOne } from 'typeorm';
+import { Entity, Column, PrimaryGeneratedColumn, CreateDateColumn, UpdateDateColumn, DeleteDateColumn, JoinColumn, ManyToOne, ManyToMany, JoinTable, OneToMany } from 'typeorm';
 
 @Entity({ name: 'articles' })
 export class Article {
@@ -33,4 +35,35 @@ export class Article {
 
   @DeleteDateColumn({ name: 'deleted_date' })
   deleteDate?: Date;
+
+  @ManyToMany(() => Tag, (tag) => tag.articles)
+  @JoinTable({
+    name: "article_tags",
+    joinColumn: {
+      name: "article_id",
+      referencedColumnName: "id"
+    },
+    inverseJoinColumn: {
+      name: "tag_id",
+      referencedColumnName: "id"
+    }
+  }) // chỉ đc set ở table chủ
+  tags?: Tag[];
+
+  @ManyToMany(() => User, (user) => user.articleFavorites)
+  @JoinTable({
+    name: "article_users",
+    joinColumn: {
+      name: "article_id",
+      referencedColumnName: "id"
+    },
+    inverseJoinColumn: {
+      name: "user_id",
+      referencedColumnName: "id"
+    }
+  })
+  userFavorites?: User[];
+
+  @OneToMany(() => Comment, (comment) => comment.article)
+  comment?: Comment[];
 }
