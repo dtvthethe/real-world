@@ -8,6 +8,7 @@ import { Tag } from './tag/tag.entity';
 import { UserModule } from './user/user.module';
 import { User } from './user/user.entity';
 import { Article } from './article/article.entity';
+import { Comment } from './user/comment.entity';
 
 @Module({
   imports: [
@@ -18,7 +19,7 @@ import { Article } from './article/article.entity';
       username: 'root',
       password: 'Aa@123456',
       database: 'real-world',
-      entities: [Tag, User, Article],
+      entities: [Tag, User, Article, Comment],
       synchronize: true,// disable for production
     }),
     ArticleModule,
