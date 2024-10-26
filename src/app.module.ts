@@ -2,13 +2,13 @@ import { Module } from '@nestjs/common';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { ArticleModule } from './article/article.module';
-import { TagModule } from './tag/tag.module';
-import { Tag } from './tag/tag.entity';
-import { UserModule } from './user/user.module';
-import { User } from './user/user.entity';
-import { Article } from './article/article.entity';
-import { Comment } from './user/comment.entity';
+import { Tag } from './tags/tag.entity';
+import { User } from './users/user.entity';
+import { Article } from './articles/article.entity';
+import { Comment } from './users/comment.entity';
+import { TagsModule } from './tags/tags.module';
+import { ArticlesModule } from './articles/articles.module';
+import { UsersModule } from './users/users.module';
 
 @Module({
   imports: [
@@ -22,9 +22,9 @@ import { Comment } from './user/comment.entity';
       entities: [Tag, User, Article, Comment],
       synchronize: true,// disable for production
     }),
-    ArticleModule,
-    TagModule,
-    UserModule,
+    TagsModule,
+    ArticlesModule,
+    UsersModule,
   ],
   controllers: [AppController],
   providers: [AppService],
