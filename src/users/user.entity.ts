@@ -1,5 +1,5 @@
 import { Article } from 'src/articles/article.entity';
-import { Entity, Column, PrimaryGeneratedColumn, CreateDateColumn, UpdateDateColumn, DeleteDateColumn, ManyToOne, ManyToMany, OneToMany } from 'typeorm';
+import { Entity, Column, PrimaryGeneratedColumn, CreateDateColumn, UpdateDateColumn, DeleteDateColumn, ManyToMany, OneToMany } from 'typeorm';
 import { Comment } from './comment.entity';
 
 @Entity({ name: 'users' })
@@ -16,16 +16,16 @@ export class User {
   @Column()
   password!: string;
 
-  @Column()
+  @Column({ nullable: true })
   bio?: string;
 
-  @Column()
+  @Column({ nullable: true })
   image?: string;
 
-  @Column({ name: 'access_token' })
+  @Column({ name: 'access_token', nullable: true })
   accessToken?: string;
 
-  @Column({ name: 'refresh_token' })
+  @Column({ name: 'refresh_token', nullable: true })
   refreshToken?: string;
 
   @CreateDateColumn({ name: 'created_date' })
@@ -34,10 +34,10 @@ export class User {
   @UpdateDateColumn({ name: 'updated_date' })
   updatedDate!: Date;
 
-  @DeleteDateColumn({ name: 'deleted_date' })
+  @DeleteDateColumn({ name: 'deleted_date', nullable: true })
   deleteDate?: Date;
 
-  @ManyToOne(() => Article, (article) => article.author)
+  @OneToMany(() => Article, (article) => article.author)
   articles?: Article[];
 
   @ManyToMany(() => Article, (article) => article.userFavorites)
