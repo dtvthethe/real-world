@@ -33,7 +33,7 @@ export class Article {
   @UpdateDateColumn({ name: 'updated_date' })
   updatedDate!: Date;
 
-  @DeleteDateColumn({ name: 'deleted_date' })
+  @DeleteDateColumn({ name: 'deleted_date', nullable: true })
   deleteDate?: Date;
 
   @ManyToMany(() => Tag, (tag) => tag.articles)
