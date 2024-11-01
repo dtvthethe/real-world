@@ -1,6 +1,6 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { DeleteResult, Repository } from 'typeorm';
 import { Article } from './article.entity';
 import { CreateArticleDto } from './dto/create-article.dto';
 import { User } from 'src/users/user.entity';
@@ -47,5 +47,9 @@ export class ArticlesService {
         const updatedArticle = this.articlesRepository.merge(article, articleDto.article);
 
         return await this.articlesRepository.save(updatedArticle);
+    }
+
+    async delete(slug: string): Promise<DeleteResult> {
+        return await this.articlesRepository.delete({ slug });
     }
 }
