@@ -1,13 +1,17 @@
-import { Expose, Transform } from "class-transformer";
+import { Expose, Transform, Type } from "class-transformer";
 import { Tag } from "src/tags/tag.entity";
 
 class AuthorResponseDto {
+    @Expose({ name: "userName" })
     username: string;
 
     @Expose()
     bio: string;
+
+    @Expose()
     image: string;
-    following: boolean;
+
+    // following: boolean;
 }
 
 export class CreateArticleResponseDto {
@@ -23,8 +27,8 @@ export class CreateArticleResponseDto {
     @Expose()
     body: string;
 
-    // @Transform(({ value }: { value: Tag[] }) => value.map(tag => tag.name))
     @Expose({ name: 'tags' })
+    @Transform(({ value }) => value.map((tag: Tag) => tag.name))
     tagList: string[];
 
     @Expose({ name: 'createdDate' })
@@ -39,5 +43,6 @@ export class CreateArticleResponseDto {
     favoritesCount: number;
 
     @Expose()
+    @Type(() => AuthorResponseDto)
     author: AuthorResponseDto;
 }

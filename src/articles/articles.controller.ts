@@ -14,11 +14,6 @@ export class ArticlesController {
     async create(@Body() articleDto: CreateArticleDto): Promise<any> {
         try {
             const result = await this.articlesService.create(articleDto);
-            console.log(result);
-            // const a = {
-            //     ...result,
-            //     tagList: ['a', 'b']
-            // }
             const articleResponseTransform = plainToInstance(CreateArticleResponseDto, result, { excludeExtraneousValues: true });
 
             return {
