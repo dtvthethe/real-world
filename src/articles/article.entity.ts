@@ -12,7 +12,7 @@ export class Article {
   @JoinColumn({ name: 'author_id' })
   author!: User;
 
-  @Column()
+  @Column({ unique: true })
   slug!: string;
 
   @Column()
