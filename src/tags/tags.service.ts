@@ -1,22 +1,45 @@
 import { Injectable } from '@nestjs/common';
-import { Repository } from 'typeorm';
+import { In, Repository } from 'typeorm';
 import { Tag } from './tag.entity';
 import { InjectRepository } from '@nestjs/typeorm';
 
 @Injectable()
 export class TagsService {
-    constructor (
+    constructor(
         @InjectRepository(Tag)
         private readonly tagRepository: Repository<Tag>
-    ) {}
-
-    findAll(): Promise<Tag[]> {
-        return this.tagRepository.find();
-    }
+    ) { }
 
     async findAllNames(): Promise<string[]> {
         const tags: Tag[] = await this.tagRepository.find();
 
         return tags.map(tag => tag.name);
+    }
+
+    async saveMultipleTag(tagNames: string[]): Promise<Tag[]> {
+        let tags: Array<Tag> = [];
+        const newTags: Array<Tag> = [];
+        const currentTags = await this.tagRepository.findBy({
+            name: In(tagNames)
+        });
+        tagNames.forEach(tagName => {
+            const tag: Tag = currentTags.find(tag => tag.name == tagName);
+
+            if (tag) {
+                tags.push(tag);
+            } else {
+                const newTag: Tag = new Tag();
+                newTag.name = tagName;
+                newTags.push(newTag);
+            }
+        });
+
+        if (newTags) {
+            const tagsCreated = this.tagRepository.create(newTags);
+            const result = await this.tagRepository.save(tagsCreated);
+            tags = [...tags, ...result];
+        }
+
+        return tags;
     }
 }

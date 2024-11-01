@@ -21,7 +21,7 @@ export class Article {
   @Column()
   description!: string;
 
-  @Column()
+  @Column({ type: 'text' })
   body!: string;
 
   @Column({ name: 'favorites_count', default: 0 })
