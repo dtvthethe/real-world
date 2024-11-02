@@ -77,4 +77,11 @@ export class ArticlesService {
 
         return await query.getMany();
     }
+
+    async findOneBySlug(slug: string): Promise<Article> {
+        return await this.articlesRepository.findOne({
+            where: { slug },
+            relations: ['author', 'tags']
+        });
+    }
 }

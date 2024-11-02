@@ -85,4 +85,21 @@ export class ArticlesController {
             }
         }
     }
+
+    @Get(':slug')
+    async find(@Param('slug') slug: string): Promise<any> {
+        try {
+            const articles = await this.articlesService.findOneBySlug(slug);
+            const articlesResponseTransform = plainToInstance(CreateArticleResponseDto, articles, { excludeExtraneousValues: true });
+
+            return {
+                article: articlesResponseTransform
+            }
+        } catch (error) {
+            console.log(error);
+            return {
+                message: 'save fail'
+            }
+        }
+    }
 }
