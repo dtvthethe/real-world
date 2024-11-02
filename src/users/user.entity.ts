@@ -44,5 +44,5 @@ export class User {
   articleFavorites?: Article[];
 
   @OneToMany(() => Comment, (comment) => comment.author)
-  comment?: Comment[];
+  comments?: Comment[];
 }
