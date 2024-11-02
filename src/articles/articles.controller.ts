@@ -138,4 +138,26 @@ export class ArticlesController {
             }
         }
     }
+
+    @Delete(':slug/comments/:id')
+    async removeComment(@Param('slug') slug: string, @Param('id') id: number): Promise<any> {
+        try {
+            const result:DeleteResult = await this.articlesService.deleteComment(slug, id);
+
+            if (result.affected) {
+                return {
+                    message: 'Delete success'
+                }
+            }
+
+            return {
+                message: 'Delete fail'
+            }
+        } catch (error) {
+            console.log(error);
+            return {
+                message: 'save fail'
+            }
+        }
+    }
 }

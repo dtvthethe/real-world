@@ -54,6 +54,12 @@ export class ArticlesService {
     }
 
     async delete(slug: string): Promise<DeleteResult> {
+        const article = this.articlesRepository.findBy({ slug });
+
+        if (!article) {
+            throw new NotFoundException('Article not found');
+        }
+
         return await this.articlesRepository.delete({ slug });
     }
 
@@ -116,5 +122,24 @@ export class ArticlesService {
         });
 
         return article ? article.comments : [];
+    }
+
+    async deleteComment(slug: string, id: number): Promise<DeleteResult> {
+        const article = await this.articlesRepository.findOne({
+            where: { slug },
+            relations: ['comments']
+        });
+
+        if (!article) {
+            throw new NotFoundException('Article not found');
+        }
+
+        const comment = article.comments.find(c => c.id == id);
+
+        if (!comment) {
+            throw new NotFoundException('Comment not found');
+        }
+
+        return await this.commentRepositoty.delete({ id });
     }
 }
