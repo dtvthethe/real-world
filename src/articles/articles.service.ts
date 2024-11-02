@@ -108,4 +108,13 @@ export class ArticlesService {
 
         return await this.commentRepositoty.save(comment);
     }
+
+    async getComments(slug: string): Promise<Comment[]> {
+        const article = await this.articlesRepository.findOne({
+            where: { slug },
+            relations: ['comments', 'comments.author']
+        });
+
+        return article ? article.comments : [];
+    }
 }

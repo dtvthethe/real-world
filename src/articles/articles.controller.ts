@@ -121,4 +121,21 @@ export class ArticlesController {
             }
         }
     }
+
+    @Get(':slug/comments')
+    async comments(@Param('slug') slug: string): Promise<any> {
+        try {
+            const comments = await this.articlesService.getComments(slug);
+            const result = comments.map(comment => plainToInstance(CreateCommentResponseDto, comment, { excludeExtraneousValues: true }));
+
+            return {
+                comments: result
+            };
+        } catch (error) {
+            console.log(error);
+            return {
+                message: 'save fail'
+            }
+        }
+    }
 }

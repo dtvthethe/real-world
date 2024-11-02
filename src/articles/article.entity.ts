@@ -65,5 +65,5 @@ export class Article {
   userFavorites?: User[];
 
   @OneToMany(() => Comment, (comment) => comment.article)
-  comment?: Comment[];
+  comments?: Comment[];
 }
