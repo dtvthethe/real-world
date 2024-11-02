@@ -52,4 +52,29 @@ export class ArticlesService {
     async delete(slug: string): Promise<DeleteResult> {
         return await this.articlesRepository.delete({ slug });
     }
+
+    async findAll(tag?: string, author?: string, limit: number = 20, offset: number = 0): Promise<Article[]> {
+        const query = this.articlesRepository.createQueryBuilder('article');
+
+        // join
+        query.innerJoinAndSelect('article.tags', 'tag');
+        query.innerJoinAndSelect('article.author', 'author');
+
+        // filter
+        if (tag) {
+            query.andWhere('tag.name LIKE :name', { name: `%${tag}%` });
+        }
+
+        if (author) {
+            query.andWhere('author.userName LIKE :name', { name: `%${author}%` });
+        }
+
+        // sort
+        query.orderBy('article.id', 'ASC');
+
+        // paginate
+        query.skip(offset).take(limit);
+
+        return await query.getMany();
+    }
 }
