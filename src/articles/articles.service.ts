@@ -7,6 +7,8 @@ import { User } from 'src/users/user.entity';
 import { TagsService } from 'src/tags/tags.service';
 import slug from 'slugify';
 import { UpdateArticleDto } from './dto/update-article.dto';
+import { Comment } from 'src/users/comment.entity';
+import { CreateCommentDto } from './dto/create-comment.dto';
 
 @Injectable()
 export class ArticlesService {
@@ -15,6 +17,8 @@ export class ArticlesService {
         private readonly articlesRepository: Repository<Article>,
         @InjectRepository(User)
         private readonly userRepository: Repository<User>,
+        @InjectRepository(Comment)
+        private readonly commentRepositoty: Repository<Comment>,
         private readonly tagService: TagsService
     ) { }
 
@@ -83,5 +87,25 @@ export class ArticlesService {
             where: { slug },
             relations: ['author', 'tags']
         });
+    }
+
+    async createComment(slug: string, commentDto: CreateCommentDto): Promise<Comment> {
+        // TODO: hard code
+        const author = await this.userRepository.findOneBy({ id: 1 });
+        // TODO: end hard code
+
+        const article = await this.articlesRepository.findOneBy({ slug });
+
+        if (!article) {
+            throw new NotFoundException('Article not found');
+        }
+
+        const comment = this.commentRepositoty.create({
+            ...commentDto.comment,
+            author,
+            article
+        });
+
+        return await this.commentRepositoty.save(comment);
     }
 }

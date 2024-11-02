@@ -6,6 +6,8 @@ import { CreateArticleResponseDto } from './dto/create-article-response.dto';
 import { UpdateArticleDto } from './dto/update-article.dto';
 import { DeleteResult } from 'typeorm';
 import { ListArticleResponseDto } from './dto/list-article-response.dto';
+import { CreateCommentDto } from './dto/create-comment.dto';
+import { CreateCommentResponseDto } from './dto/create-comment-response.dto';
 
 @Controller('articles')
 export class ArticlesController {
@@ -95,6 +97,23 @@ export class ArticlesController {
             return {
                 article: articlesResponseTransform
             }
+        } catch (error) {
+            console.log(error);
+            return {
+                message: 'save fail'
+            }
+        }
+    }
+
+    @Post(':slug/comments')
+    async createComment(@Param('slug') slug: string, @Body() commentDto: CreateCommentDto): Promise<any> {
+        try {
+            const comment = await this.articlesService.createComment(slug, commentDto);
+            const result = plainToInstance(CreateCommentResponseDto, comment, { excludeExtraneousValues: true });
+
+            return {
+                comment: result
+            };
         } catch (error) {
             console.log(error);
             return {

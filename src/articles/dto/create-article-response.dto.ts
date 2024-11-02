@@ -1,18 +1,6 @@
 import { Expose, Transform, Type } from "class-transformer";
 import { Tag } from "src/tags/tag.entity";
-
-class AuthorResponseDto {
-    @Expose({ name: "userName" })
-    username: string;
-
-    @Expose()
-    bio: string;
-
-    @Expose()
-    image: string;
-
-    // following: boolean;
-}
+import { AuthorResponseDto } from "./author-response.dto";
 
 export class CreateArticleResponseDto {
     @Expose()
