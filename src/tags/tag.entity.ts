@@ -8,7 +8,7 @@ export class Tag {
   id!: number;
 
   @Expose()
-  @Column({ type: "varchar", length: 100, unique: true, nullable: false })
+  @Column({ unique: true })
   name!: string;
 
   @CreateDateColumn({ name: 'created_date' })

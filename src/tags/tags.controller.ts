@@ -8,7 +8,7 @@ export class TagsController {
 
     @Get('')
     async index(): Promise<any> {
-        const tags: string[] = await this.tagsService.findAllNames();
+        const tags = await this.tagsService.findAllNames();
 
         return {
             tags: tags
