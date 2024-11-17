@@ -25,7 +25,7 @@ export class AuthService {
             email: user.email,
         };
         const options = {
-            expiresIn: '3m',
+            expiresIn: '1d',
         }
 
         return jwt.sign(payload, SECRET_KEY, options);
