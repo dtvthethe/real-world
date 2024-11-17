@@ -8,17 +8,17 @@ const SECRET_KEY = 'abc';
 
 export class AuthService {
     // create password
-    createPassword = (password: string) => {
+    createPassword = (password: string): Promise<string> => {
         return bcrypt.hash(password, NUMBER_OF_PASSWORD_LOOPS);
     }
 
     // compare password
-    comparePassword = (password: string, hashedPassword: string) => {
+    comparePassword = (password: string, hashedPassword: string): Promise<boolean> => {
         return bcrypt.compare(password, hashedPassword);
     }
 
     // generate access token
-    generateAccessToken = (user: User) => {
+    generateAccessToken = (user: User): string => {
         const payload = {
             sub: user.id,
             username: user.userName,
@@ -32,7 +32,7 @@ export class AuthService {
     }
 
     // validate token
-    validateToken = (token: string) => {
+    validateToken = (token: string): any => {
         return jwt.verify(token, SECRET_KEY);
     }
 }
