@@ -33,6 +33,9 @@ export class AuthService {
 
     // validate token
     validateToken = (token: string): any => {
-        return jwt.verify(token, SECRET_KEY);
+        // token = "Token eyJhbGciOi..."
+        const tokens = token.split(' ');
+
+        return jwt.verify(tokens[1], SECRET_KEY);
     }
 }
