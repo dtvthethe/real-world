@@ -8,15 +8,7 @@ export class Comment {
   id: number;
 
   @Column()
-  body: string;
-
-  @ManyToOne(() => User, (user) => user.comments)
-  @JoinColumn({ name: "author_id" })
-  author: User;
- 
-  @ManyToOne(() => Article, (article) => article.comments)
-  @JoinColumn({ name: "article_id" })
-  article: Article;
+  body!: string;
 
   @CreateDateColumn({ name: 'created_date' })
   createdDate!: Date;
@@ -26,4 +18,12 @@ export class Comment {
 
   @DeleteDateColumn({ name: 'deleted_date', nullable: true })
   deleteDate?: Date;
+
+  @ManyToOne(() => Article, (article) => article.comments)
+  @JoinColumn({ name: "article_id" })
+  article: Article;
+
+  @ManyToOne(() => User, (user) => user.comments)
+  @JoinColumn({ name: "author_id" })
+  author: User;
 }
