@@ -17,7 +17,7 @@ export class User {
   @Column()
   password!: string;
 
-  @Column({ default: 'default.png' })
+  @Column({ nullable: true })
   image: string;
 
   @Column({ nullable: true })
