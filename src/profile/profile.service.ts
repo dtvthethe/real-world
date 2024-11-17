@@ -13,6 +13,10 @@ export class ProfileService {
         private readonly authService: AuthService
     ) { }
 
+    async findByUsername(username: string): Promise<User> {
+        return await this.userRepository.findOneBy({ userName: username });
+    }
+
     async detail(header: any): Promise<User> {
         const headerToken = header.authorization;
         const result = this.authService.validateToken(headerToken);
