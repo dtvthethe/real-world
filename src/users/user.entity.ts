@@ -44,9 +44,9 @@ export class User {
   @ManyToMany(() => Article, (article) => article.userFavorites)
   articleFavorites?: Article[];
 
-  @OneToMany(() => UserFollow, (userFollows) => userFollows.follower)
+  @OneToMany(() => UserFollow, (userFollows) => userFollows.followee)
   following: UserFollow[];
 
-  @OneToMany(() => UserFollow, (userFollows) => userFollows.followee)
+  @OneToMany(() => UserFollow, (userFollows) => userFollows.follower)
   followers: UserFollow[];
 }

@@ -1,4 +1,4 @@
-import { Expose } from "class-transformer";
+import { Expose, Transform } from "class-transformer";
 
 export class UserProfileResponse {
     @Expose({ name: 'userName' })
@@ -11,5 +11,6 @@ export class UserProfileResponse {
     image: string;
 
     @Expose()
-    following: boolean;
+    @Transform(({ value }) => value && value.length > 0)
+    following: boolean = false;
 }

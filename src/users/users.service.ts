@@ -33,6 +33,7 @@ export class UsersService {
 
     async login(userDto: LoginUserDto): Promise<any> {
         const user = userDto.user;
+        console.log(user);
         const userSaved = await this.userRepository.findOneBy({
             email: user.email,
         });
