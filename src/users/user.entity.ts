@@ -44,9 +44,11 @@ export class User {
   @ManyToMany(() => Article, (article) => article.userFavorites)
   articleFavorites?: Article[];
 
+  // ai đang theo dõi mình, ko unffollow dc
   @OneToMany(() => UserFollow, (userFollows) => userFollows.follower)
   following: UserFollow[];
 
+  // mình đang theo dõi ai, unffollow dc
   @OneToMany(() => UserFollow, (userFollows) => userFollows.followee)
   followers: UserFollow[];
 }
