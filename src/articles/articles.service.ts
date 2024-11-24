@@ -3,9 +3,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { DeleteResult, Repository } from 'typeorm';
 import { Article } from './article.entity';
 import { CreateArticleDto } from './dto/create-article.dto';
-import { User } from 'src/users/user.entity';
 import { TagsService } from 'src/tags/tags.service';
-import slug from 'slugify';
 import { UpdateArticleDto } from './dto/update-article.dto';
 import { Comment } from 'src/users/comment.entity';
 import { CreateCommentDto } from './dto/create-comment.dto';
@@ -13,14 +11,13 @@ import { ProfileService } from 'src/profile/profile.service';
 import { plainToInstance } from 'class-transformer';
 import { CreateArticleResponseDto } from './dto/create-article-response.dto';
 import slugify from 'slugify';
+import { CreateCommentResponseDto } from './dto/create-comment-response.dto';
 
 @Injectable()
 export class ArticlesService {
     constructor(
         @InjectRepository(Article)
         private readonly articlesRepository: Repository<Article>,
-        @InjectRepository(User)
-        private readonly userRepository: Repository<User>,
         @InjectRepository(Comment)
         private readonly commentRepositoty: Repository<Comment>,
         private readonly tagService: TagsService,
@@ -39,7 +36,7 @@ export class ArticlesService {
             ...articleDto.article,
             author,
             tags,
-            slug: slug(articleDto.article.title, { lower: true })
+            slug: slugify(articleDto.article.title, { lower: true })
         });
         const article = await this.articlesRepository.save(articleCreate);
 
@@ -195,10 +192,12 @@ export class ArticlesService {
         );
     }
 
-    async createComment(slug: string, commentDto: CreateCommentDto): Promise<Comment> {
-        // TODO: hard code
-        const author = await this.userRepository.findOneBy({ id: 1 });
-        // TODO: end hard code
+    async createComment(headers: any, slug: string, commentDto: CreateCommentDto): Promise<CreateCommentResponseDto> {
+        const author = await this.profileService.detail(headers);
+
+        if (!author) {
+            throw new Error('User not found');
+        }
 
         const article = await this.articlesRepository.findOneBy({ slug });
 
@@ -211,33 +210,78 @@ export class ArticlesService {
             author,
             article
         });
+        const commentSaved = await this.commentRepositoty.save(comment);
 
-        return await this.commentRepositoty.save(comment);
+        return plainToInstance(
+            CreateCommentResponseDto,
+            {
+                ...commentSaved,
+                author: {
+                    ...commentSaved.author,
+                    following: false
+                }
+            },
+            { excludeExtraneousValues: true }
+        );
     }
 
-    async getComments(slug: string): Promise<Comment[]> {
-        const article = await this.articlesRepository.findOne({
-            where: { slug },
-            relations: ['comments', 'comments.author']
-        });
+    async getComments(headers: any, slug: string): Promise<CreateCommentResponseDto[]> {
+        let author = null;
 
-        return article ? article.comments : [];
-    }
+        if (headers.authorization) {
+            author = await this.profileService.detail(headers);
 
-    async deleteComment(slug: string, id: number): Promise<DeleteResult> {
-        const article = await this.articlesRepository.findOne({
-            where: { slug },
-            relations: ['comments']
-        });
-
-        if (!article) {
-            throw new NotFoundException('Article not found');
+            if (!author) {
+                throw new Error('User not found');
+            }
         }
 
-        const comment = article.comments.find(c => c.id == id);
+        const comments = await this.commentRepositoty.find({
+            where: {
+                article: {
+                    slug
+                }
+            },
+            relations: ['author', 'author.following.followee']
+        });
+        const result = comments.map(comment => plainToInstance(
+            CreateCommentResponseDto,
+            {
+                ...comment,
+                author: {
+                   ...comment.author,
+                    following: author
+                        ? (comment.author.following.find(f => f.followee.id == author.id)) ? true : false
+                        : false
+                }
+            },
+            { excludeExtraneousValues: true })
+        );
+
+        return result;
+    }
+
+    async deleteComment(headers: any, slug: string, id: number): Promise<DeleteResult> {
+        const author = await this.profileService.detail(headers);
+
+        if (!author) {
+            throw new Error('User not found');
+        }
+
+        const comment = await this.commentRepositoty.findOne({
+            where: {
+                id,
+                article: { slug }
+            },
+            relations: ['author']
+        });
 
         if (!comment) {
             throw new NotFoundException('Comment not found');
+        }
+
+        if (comment.author.id != author.id) {
+            throw new Error('User not authorized to delete this comment');
         }
 
         return await this.commentRepositoty.delete({ id });

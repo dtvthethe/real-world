@@ -114,10 +114,9 @@ export class ArticlesController {
     }
 
     @Post(':slug/comments')
-    async createComment(@Param('slug') slug: string, @Body() commentDto: CreateCommentDto): Promise<any> {
+    async createComment(@Headers() headers, @Param('slug') slug: string, @Body() commentDto: CreateCommentDto): Promise<any> {
         try {
-            const comment = await this.articlesService.createComment(slug, commentDto);
-            const result = plainToInstance(CreateCommentResponseDto, comment, { excludeExtraneousValues: true });
+            const result = await this.articlesService.createComment(headers, slug, commentDto);
 
             return {
                 comment: result
@@ -132,10 +131,9 @@ export class ArticlesController {
     }
 
     @Get(':slug/comments')
-    async comments(@Param('slug') slug: string): Promise<any> {
+    async comments(@Headers() headers, @Param('slug') slug: string): Promise<any> {
         try {
-            const comments = await this.articlesService.getComments(slug);
-            const result = comments.map(comment => plainToInstance(CreateCommentResponseDto, comment, { excludeExtraneousValues: true }));
+            const result = await this.articlesService.getComments(headers, slug);
 
             return {
                 comments: result
@@ -150,9 +148,9 @@ export class ArticlesController {
     }
 
     @Delete(':slug/comments/:id')
-    async removeComment(@Param('slug') slug: string, @Param('id') id: number): Promise<any> {
+    async removeComment(@Headers() headers, @Param('slug') slug: string, @Param('id') id: number): Promise<any> {
         try {
-            const result = await this.articlesService.deleteComment(slug, id);
+            const result = await this.articlesService.deleteComment(headers, slug, id);
 
             if (result.affected) {
                 return {
