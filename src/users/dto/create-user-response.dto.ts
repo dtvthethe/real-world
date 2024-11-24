@@ -4,10 +4,10 @@ export class CreateUserResponseDto {
     @Expose()
     email: string;
 
-    @Expose({ name: 'accessToken' })
+    @Expose()
     token: string;
 
-    @Expose()
+    @Expose({ name: 'userName'})
     username: string;
 
     @Expose()

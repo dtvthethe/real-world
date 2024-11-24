@@ -1,32 +1,30 @@
 import { Article } from 'src/articles/article.entity';
 import { Entity, Column, PrimaryGeneratedColumn, CreateDateColumn, UpdateDateColumn, DeleteDateColumn, ManyToMany, OneToMany } from 'typeorm';
 import { Comment } from './comment.entity';
+import { UserFollow } from './user_follow.entity';
 
 @Entity({ name: 'users' })
 export class User {
   @PrimaryGeneratedColumn()
   id!: number;
 
-  @Column()
+  @Column({ unique: true })
   email!: string;
 
-  @Column({ name: 'username', type: 'varchar', length: 120, unique: true, nullable: false })
+  @Column({ name: 'username', unique: true })
   userName!: string;
 
   @Column()
   password!: string;
 
   @Column({ nullable: true })
-  bio?: string;
+  image: string;
 
   @Column({ nullable: true })
-  image?: string;
+  bio?: string;
 
-  @Column({ name: 'access_token', nullable: true })
-  accessToken?: string;
-
-  @Column({ name: 'refresh_token', nullable: true })
-  refreshToken?: string;
+  @Column({ default: false })
+  demo: boolean;
 
   @CreateDateColumn({ name: 'created_date' })
   createdDate!: Date;
@@ -40,9 +38,17 @@ export class User {
   @OneToMany(() => Article, (article) => article.author)
   articles?: Article[];
 
+  @OneToMany(() => Comment, (comment) => comment.author)
+  comments?: Comment[];
+
   @ManyToMany(() => Article, (article) => article.userFavorites)
   articleFavorites?: Article[];
 
-  @OneToMany(() => Comment, (comment) => comment.author)
-  comments?: Comment[];
+  // ai đang theo dõi mình, ko unffollow dc
+  @OneToMany(() => UserFollow, (userFollows) => userFollows.follower)
+  following: UserFollow[];
+
+  // mình đang theo dõi ai, unffollow dc
+  @OneToMany(() => UserFollow, (userFollows) => userFollows.followee)
+  followers: UserFollow[];
 }

@@ -51,7 +51,7 @@ export class ArticlesController {
     @Delete(':slug')
     async delete(@Param('slug') slug: string): Promise<any> {
         try {
-            const result:DeleteResult = await this.articlesService.delete(slug);
+            const result = await this.articlesService.delete(slug);
 
             if (result.affected) {
                 return {
@@ -142,7 +142,7 @@ export class ArticlesController {
     @Delete(':slug/comments/:id')
     async removeComment(@Param('slug') slug: string, @Param('id') id: number): Promise<any> {
         try {
-            const result:DeleteResult = await this.articlesService.deleteComment(slug, id);
+            const result = await this.articlesService.deleteComment(slug, id);
 
             if (result.affected) {
                 return {

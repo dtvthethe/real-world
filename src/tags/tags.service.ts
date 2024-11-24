@@ -11,24 +11,24 @@ export class TagsService {
     ) { }
 
     async findAllNames(): Promise<string[]> {
-        const tags: Tag[] = await this.tagRepository.find();
+        const tags = await this.tagRepository.find();
 
         return tags.map(tag => tag.name);
     }
 
     async saveMultipleTag(tagNames: string[]): Promise<Tag[]> {
         let tags: Array<Tag> = [];
-        const newTags: Array<Tag> = [];
+        const newTags = [];
         const currentTags = await this.tagRepository.findBy({
             name: In(tagNames)
         });
         tagNames.forEach(tagName => {
-            const tag: Tag = currentTags.find(tag => tag.name == tagName);
+            const tag = currentTags.find(tag => tag.name == tagName);
 
             if (tag) {
                 tags.push(tag);
             } else {
-                const newTag: Tag = new Tag();
+                const newTag = new Tag();
                 newTag.name = tagName;
                 newTags.push(newTag);
             }

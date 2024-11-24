@@ -8,10 +8,6 @@ export class Article {
   @PrimaryGeneratedColumn()
   id!: number;
 
-  @ManyToOne(() => User, (user) => user.articles)
-  @JoinColumn({ name: 'author_id' })
-  author!: User;
-
   @Column({ unique: true })
   slug!: string;
 
@@ -24,9 +20,6 @@ export class Article {
   @Column({ type: 'text' })
   body!: string;
 
-  @Column({ name: 'favorites_count', default: 0 })
-  favoritesCount!: number;
-
   @CreateDateColumn({ name: 'created_date' })
   createdDate!: Date;
 
@@ -36,9 +29,16 @@ export class Article {
   @DeleteDateColumn({ name: 'deleted_date', nullable: true })
   deleteDate?: Date;
 
+  @ManyToOne(() => User, (user) => user.articles)
+  @JoinColumn({ name: 'author_id' })
+  author!: User;
+
+  @OneToMany(() => Comment, (comment) => comment.article)
+  comments?: Comment[];
+
   @ManyToMany(() => Tag, (tag) => tag.articles)
   @JoinTable({
-    name: "article_tags",
+    name: "article_to_tags",
     joinColumn: {
       name: "article_id",
       referencedColumnName: "id"
@@ -52,7 +52,7 @@ export class Article {
 
   @ManyToMany(() => User, (user) => user.articleFavorites)
   @JoinTable({
-    name: "article_users",
+    name: "user_favorites",
     joinColumn: {
       name: "article_id",
       referencedColumnName: "id"
@@ -63,7 +63,4 @@ export class Article {
     }
   })
   userFavorites?: User[];
-
-  @OneToMany(() => Comment, (comment) => comment.article)
-  comments?: Comment[];
 }

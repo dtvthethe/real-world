@@ -9,6 +9,8 @@ import { Comment } from './users/comment.entity';
 import { TagsModule } from './tags/tags.module';
 import { ArticlesModule } from './articles/articles.module';
 import { UsersModule } from './users/users.module';
+import { UserFollow } from './users/user_follow.entity';
+import { ProfileModule } from './profile/profile.module';
 
 @Module({
   imports: [
@@ -19,12 +21,13 @@ import { UsersModule } from './users/users.module';
       username: 'root',
       password: 'Aa@123456',
       database: 'real-world',
-      entities: [Tag, User, Article, Comment],
+      entities: [Tag, User, Article, Comment, UserFollow],
       synchronize: true,// disable for production
     }),
     TagsModule,
     ArticlesModule,
     UsersModule,
+    ProfileModule,
   ],
   controllers: [AppController],
   providers: [AppService],
