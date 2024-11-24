@@ -31,10 +31,9 @@ export class ProfileController {
     async update(@Headers() header, @Body() body: UpdateUserDto): Promise<any> {
         try {
             const user = await this.profileService.update(header, body);
-            const userResponseTransform = plainToInstance(CreateUserResponseDto, user, { excludeExtraneousValues: true });
 
             return {
-                user: userResponseTransform
+                user
             };
         } catch (err) {
             console.log(err);

@@ -1,8 +1,8 @@
 import { Type } from "class-transformer";
-import { IsNotEmpty, IsOptional, IsString, ValidateNested } from "class-validator";
+import { IsOptional, IsString, ValidateNested } from "class-validator";
 
 class ArticleDto {
-    @IsNotEmpty()
+    @IsOptional()
     @IsString()
     title!: string;
 

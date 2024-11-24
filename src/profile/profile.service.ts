@@ -7,6 +7,7 @@ import { UpdateUserDto } from './dto/update-user.dto';
 import { UserFollow } from 'src/users/user_follow.entity';
 import { UserProfileResponse } from './dto/user-profile-response';
 import { plainToInstance } from 'class-transformer';
+import { CreateUserResponseDto } from 'src/users/dto/create-user-response.dto';
 
 @Injectable()
 export class ProfileService {
@@ -18,35 +19,50 @@ export class ProfileService {
         private readonly authService: AuthService
     ) { }
 
-    async findByUsername(header: any, username: string): Promise<UserProfileResponse> {
-        const userSaved = await this.detail(header);
+    async buildUserByUsername(header: any, username: string): Promise<any> {
+        let userSaved = null;
 
-        if (!userSaved) {
+        if (header.authorization) {
+            userSaved = await this.detail(header);
+
+            if (!userSaved) {
+                throw new Error('User not found');
+            }
+        }
+
+        const userByUserName = await this.userRepository.findOneBy({
+            userName: username
+        });
+
+        if (!userByUserName) {
             throw new Error('User not found');
         }
 
-        const userFollow = await this.userRepository.findOne({
-            where: {
-                userName: username,
-                followers: {
-                    follower: {
-                        id: userSaved.id
+        const userFollow = userSaved
+            ? await this.userRepository.findOne({
+                where: {
+                    userName: username,
+                    followers: {
+                        follower: {
+                            id: userSaved.id
+                        }
                     }
-                }
-            },
-            relations: ['followers']
-        });
+                },
+                relations: ['followers']
+            })
+            : null;
 
-        const userResponseTransform = plainToInstance(
-            UserProfileResponse,
-            {
-                ...userSaved,
-                following: userFollow ? true : false
-            },
-            { excludeExtraneousValues: true }
-        );
+        return {
+            ...userByUserName,
+            following: userFollow ? true : false
+        }
+    }
 
-        return userResponseTransform;
+    async findByUsername(header: any, username: string): Promise<UserProfileResponse> {
+        const user = await this.buildUserByUsername(header, username);
+
+        return plainToInstance(
+            UserProfileResponse, user, { excludeExtraneousValues: true });
     }
 
     async detail(header: any): Promise<User> {
@@ -60,7 +76,7 @@ export class ProfileService {
         return await this.userRepository.findOneBy({ id: result.sub });
     }
 
-    async update(header: any, userDto: UpdateUserDto): Promise<User> {
+    async update(header: any, userDto: UpdateUserDto): Promise<CreateUserResponseDto> {
         const userSaved = await this.detail(header);
 
         if (!userSaved) {
@@ -78,8 +94,13 @@ export class ProfileService {
             ...user
         }
         const updatedUser = this.userRepository.merge(userSaved, newProfile);
+        const result = await this.userRepository.save(updatedUser);
 
-        return await this.userRepository.save(updatedUser);
+        return plainToInstance(
+            CreateUserResponseDto,
+            result,
+            { excludeExtraneousValues: true }
+        );
     }
 
     async follow(header: any, username: string): Promise<UserProfileResponse> {
