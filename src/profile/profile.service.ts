@@ -6,6 +6,7 @@ import { Repository } from 'typeorm';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { UserFollow } from 'src/users/user_follow.entity';
 import { UserProfileResponse } from './dto/user-profile-response';
+import { plainToInstance } from 'class-transformer';
 
 @Injectable()
 export class ProfileService {
@@ -17,8 +18,35 @@ export class ProfileService {
         private readonly authService: AuthService
     ) { }
 
-    async findByUsername(username: string): Promise<User> {
-        return await this.userRepository.findOneBy({ userName: username });
+    async findByUsername(header: any, username: string): Promise<UserProfileResponse> {
+        const userSaved = await this.detail(header);
+
+        if (!userSaved) {
+            throw new Error('User not found');
+        }
+
+        const userFollow = await this.userRepository.findOne({
+            where: {
+                userName: username,
+                followers: {
+                    follower: {
+                        id: userSaved.id
+                    }
+                }
+            },
+            relations: ['followers']
+        });
+
+        const userResponseTransform = plainToInstance(
+            UserProfileResponse,
+            {
+                ...userSaved,
+                following: userFollow ? true : false
+            },
+            { excludeExtraneousValues: true }
+        );
+
+        return userResponseTransform;
     }
 
     async detail(header: any): Promise<User> {
