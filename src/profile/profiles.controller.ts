@@ -1,4 +1,4 @@
-import { Controller, Get, Param } from '@nestjs/common';
+import { Controller, Delete, Get, Headers, Param, Post } from '@nestjs/common';
 import { plainToInstance } from 'class-transformer';
 import { ProfileService } from './profile.service';
 import { UserProfileResponse } from './dto/user-profile-response';
@@ -22,6 +22,38 @@ export class ProfilesController {
             console.log(err);
             return {
                 message: err.message
+            };
+        }
+    }
+
+    @Post('/:username/follow')
+    async follow(@Headers() headers, @Param('username') username: string): Promise<any> {
+        try {
+            const profile = await this.profileService.follow(headers, username);
+
+            return {
+                profile
+            };
+        } catch (error) {
+            console.log(error);
+            return {
+                message: error.message
+            };
+        }
+    }
+
+    @Delete('/:username/follow')
+    async unfollow(@Headers() headers, @Param('username') username: string): Promise<any> {
+        try {
+            const profile = await this.profileService.unfollow(headers, username);
+
+            return {
+                profile
+            };
+        } catch (error) {
+            console.log(error);
+            return {
+                message: error.message
             };
         }
     }
