@@ -10,13 +10,12 @@ export class ProfilesController {
     ) { }
 
     @Get('/:username')
-    async find(@Param('username') username: string): Promise<any> {
+    async find(@Headers() headers, @Param('username') username: string): Promise<any> {
         try {
-            const user = await this.profileService.findByUsername(username);
-            const userResponseTransform = plainToInstance(UserProfileResponse, user, { excludeExtraneousValues: true });
+            const userDto = await this.profileService.findByUsername(headers, username);
 
             return {
-                profile: userResponseTransform
+                profile: userDto
             };
         } catch (err) {
             console.log(err);
