@@ -20,12 +20,12 @@ export class ProfileService {
     ) { }
 
     async buildUserByUsername(header: any, username: string): Promise<any> {
-        let userSaved = null;
+        let loginUser = null;
 
         if (header.authorization) {
-            userSaved = await this.detail(header);
+            loginUser = await this.detail(header);
 
-            if (!userSaved) {
+            if (!loginUser) {
                 throw new Error('User not found');
             }
         }
@@ -38,13 +38,13 @@ export class ProfileService {
             throw new Error('User not found');
         }
 
-        const userFollow = userSaved
+        const userFollow = loginUser
             ? await this.userRepository.findOne({
                 where: {
                     userName: username,
                     followers: {
                         follower: {
-                            id: userSaved.id
+                            id: loginUser.id
                         }
                     }
                 },
