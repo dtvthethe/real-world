@@ -10,5 +10,6 @@ export class AuthorResponseDto {
     @Expose()
     image: string;
 
-    // following: boolean;
+    @Expose()
+    following: boolean;
 }

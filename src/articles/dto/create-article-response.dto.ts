@@ -25,7 +25,8 @@ export class CreateArticleResponseDto {
     @Expose({ name: 'updatedDate' })
     updatedAt: string;
 
-    // favorited: string;
+    @Expose()
+    favorited: string;
 
     @Expose()
     favoritesCount: number;
