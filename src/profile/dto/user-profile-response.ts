@@ -2,14 +2,14 @@ import { Expose } from "class-transformer";
 
 export class UserProfileResponse {
     @Expose({ name: 'userName' })
-    username: string;
+    readonly username: string;
 
     @Expose()
-    bio: string;
+    readonly bio: string;
 
     @Expose()
-    image: string;
+    readonly image: string;
 
     @Expose()
-    following: boolean;
+    readonly following: boolean;
 }

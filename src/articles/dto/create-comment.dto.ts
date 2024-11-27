@@ -4,11 +4,11 @@ import { IsNotEmpty, IsString, ValidateNested } from "class-validator";
 class CommentDto {
     @IsNotEmpty()
     @IsString()
-    body!: string;
+    readonly body!: string;
 }
 
 export class CreateCommentDto {
     @ValidateNested()
     @Type(() => CommentDto)
-    comment: CommentDto;
+    readonly comment: CommentDto;
 }

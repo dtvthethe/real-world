@@ -3,18 +3,18 @@ import { AuthorResponseDto } from "./author-response.dto";
 
 export class CreateCommentResponseDto {
     @Expose()
-    id: string;
+    readonly id: string;
 
     @Expose({ name: 'createdDate' })
-    createdAt: string;
+    readonly createdAt: string;
 
     @Expose({ name: 'updatedDate' })
-    updatedAt: string;
+    readonly updatedAt: string;
 
     @Expose()
-    body: string;
+    readonly body: string;
 
     @Expose()
     @Type(() => AuthorResponseDto)
-    author: AuthorResponseDto
+    readonly author: AuthorResponseDto
 }
