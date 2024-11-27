@@ -1,4 +1,4 @@
-import { Body, Controller, Delete, Get, Headers, Param, Post, Put, Query } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Header, Headers, Param, Post, Put, Query } from '@nestjs/common';
 import { CreateArticleDto } from './dto/create-article.dto';
 import { ArticlesService } from './articles.service';
 import { plainToInstance } from 'class-transformer';
@@ -73,6 +73,7 @@ export class ArticlesController {
 
     @Get('')
     async index(
+        @Headers() headers,
         @Query('tag') tag?: string,
         @Query('author') author?: string,
         @Query('favorited') favorited?: string,
@@ -80,12 +81,11 @@ export class ArticlesController {
         @Query('offset') offset: number = 0
     ): Promise<any> {
         try {
-            const articles = await this.articlesService.findAll(tag, author, favorited, limit, offset);
-            const articlesResponseTransform = articles.map(article => plainToInstance(ListArticleResponseDto, article, { excludeExtraneousValues: true }));
+            const result = await this.articlesService.findAll(headers, tag, author, favorited, limit, offset);
 
             return {
-                articles: articlesResponseTransform,
-                articlesCount: articles.length
+                articles: result,
+                articlesCount: result.length
             }
         } catch (error) {
             console.log(error);

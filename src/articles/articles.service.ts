@@ -12,6 +12,7 @@ import { plainToInstance } from 'class-transformer';
 import { CreateArticleResponseDto } from './dto/create-article-response.dto';
 import slugify from 'slugify';
 import { CreateCommentResponseDto } from './dto/create-comment-response.dto';
+import { ListArticleResponseDto } from './dto/list-article-response.dto';
 
 @Injectable()
 export class ArticlesService {
@@ -118,30 +119,43 @@ export class ArticlesService {
     }
 
     async findAll(
+        headers: any,
         tag?: string,
         author?: string,
         favorited?: string,
         limit: number = 20,
         offset: number = 0
-    ): Promise<Article[]> {
+    ): Promise<any> {
+        let userLogin = null;
+
+        if (headers.authorization) {
+            userLogin = await this.profileService.detail(headers);
+
+            if (!userLogin) {
+                throw new Error('User not found');
+            }
+        }
+
+        // TODO: co nen thuc hien query ntn nay ko
         const query = this.articlesRepository.createQueryBuilder('article');
 
         // join
         query.innerJoinAndSelect('article.tags', 'tag');
         query.innerJoinAndSelect('article.author', 'author');
+        query.leftJoinAndSelect('article.userFavorites', 'favorite');
 
         // filter
         if (tag) {
-            query.andWhere('tag.name LIKE :name', { name: `%${tag}%` });
+            query.andWhere('tag.name = :tag', { tag });
         }
 
         if (author) {
-            query.andWhere('author.userName LIKE :name', { name: `%${author}%` });
+            query.andWhere('author.userName LIKE :author', { author: `%${author}%` });
         }
 
-        // if (favorited) {
-        //     query.andWhere('author.userName LIKE :name', { name: `%${author}%` });
-        // }
+        if (favorited) {
+            query.andWhere('favorite.userName = :favorited', { favorited });
+        }
 
         // sort
         query.orderBy('article.id', 'DESC');
@@ -149,7 +163,27 @@ export class ArticlesService {
         // paginate
         query.skip(offset).take(limit);
 
-        return await query.getMany();
+        // fetch results
+        const articles = await query.getMany();
+        const articlesResponseTransform = articles.map(article => plainToInstance(
+            ListArticleResponseDto,
+            {
+                ...article,
+                favorited: userLogin
+                    ? ((article.userFavorites.find(user => user.id == userLogin.id)) ? true : false)
+                    : false,
+                favoritesCount: article.userFavorites.length,
+                author: {
+                    ...article.author,
+                    following: userLogin
+                        ? ((article.author.following.find(f => f.followee.id == userLogin.id)) ? true : false)
+                        : false
+                }
+            },
+            { excludeExtraneousValues: true }
+        ));
+
+        return articlesResponseTransform;
     }
 
     async findOneBySlug(headers: any, slug: string): Promise<CreateArticleResponseDto> {
@@ -249,7 +283,7 @@ export class ArticlesService {
             {
                 ...comment,
                 author: {
-                   ...comment.author,
+                    ...comment.author,
                     following: author
                         ? (comment.author.following.find(f => f.followee.id == author.id)) ? true : false
                         : false
@@ -312,9 +346,8 @@ export class ArticlesService {
         article.userFavorites.push(userLogin);
         await this.articlesRepository.save(article);
         const user = await this.profileService.buildUserByUsername(headers, article.author.userName);
-        console.log(user);
 
-
+        // TODO: article.userFavorites.length doesn't work
         return plainToInstance(
             CreateArticleResponseDto,
             {
@@ -354,6 +387,7 @@ export class ArticlesService {
         await this.articlesRepository.save(article);
         const user = await this.profileService.buildUserByUsername(headers, article.author.userName);
 
+        // TODO: article.userFavorites.length doesn't work
         return plainToInstance(
             CreateArticleResponseDto,
             {
