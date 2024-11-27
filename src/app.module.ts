@@ -1,6 +1,4 @@
 import { Module } from '@nestjs/common';
-import { AppController } from './app.controller';
-import { AppService } from './app.service';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { Tag } from './tags/tag.entity';
 import { User } from './users/user.entity';
@@ -23,13 +21,12 @@ import { ProfileModule } from './profile/profile.module';
       database: 'real-world',
       entities: [Tag, User, Article, Comment, UserFollow],
       synchronize: true,// disable for production
+      // logging: true
     }),
     TagsModule,
     ArticlesModule,
     UsersModule,
     ProfileModule,
-  ],
-  controllers: [AppController],
-  providers: [AppService],
+  ]
 })
 export class AppModule { }
