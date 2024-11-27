@@ -124,11 +124,12 @@ export class ArticlesService {
         author?: string,
         favorited?: string,
         limit: number = 20,
-        offset: number = 0
+        offset: number = 0,
+        isFeed: boolean = false
     ): Promise<any> {
         let userLogin = null;
 
-        if (headers.authorization) {
+        if (headers.authorization || isFeed) {
             userLogin = await this.profileService.detail(headers);
 
             if (!userLogin) {
@@ -145,16 +146,20 @@ export class ArticlesService {
         query.leftJoinAndSelect('article.userFavorites', 'favorite');
 
         // filter
-        if (tag) {
-            query.andWhere('tag.name = :tag', { tag });
-        }
+        if (isFeed) {
+            query.andWhere('author.userName = :author', { author: userLogin.userName });
+        } else {
+            if (tag) {
+                query.andWhere('tag.name = :tag', { tag });
+            }
 
-        if (author) {
-            query.andWhere('author.userName LIKE :author', { author: `%${author}%` });
-        }
+            if (author) {
+                query.andWhere('author.userName = :author', { author });
+            }
 
-        if (favorited) {
-            query.andWhere('favorite.userName = :favorited', { favorited });
+            if (favorited) {
+                query.andWhere('favorite.userName = :favorited', { favorited });
+            }
         }
 
         // sort
@@ -176,7 +181,7 @@ export class ArticlesService {
                 author: {
                     ...article.author,
                     following: userLogin
-                        ? ((article.author.following.find(f => f.followee.id == userLogin.id)) ? true : false)
+                        ? ((article.author.following && article.author.following.find(f => f.followee.id == userLogin.id)) ? true : false)
                         : false
                 }
             },
