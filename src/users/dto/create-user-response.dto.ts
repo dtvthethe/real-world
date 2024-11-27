@@ -2,17 +2,17 @@ import { Expose } from 'class-transformer';
 
 export class CreateUserResponseDto {
     @Expose()
-    email: string;
+    readonly email: string;
 
     @Expose()
-    token: string;
+    readonly token: string;
 
     @Expose({ name: 'userName'})
-    username: string;
+    readonly username: string;
 
     @Expose()
-    bio: string;
+    readonly bio: string;
 
     @Expose()
-    image: string;
+    readonly image: string;
 }

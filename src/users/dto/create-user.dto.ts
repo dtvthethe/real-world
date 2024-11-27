@@ -3,18 +3,18 @@ import { IsEmail, IsString, MaxLength, ValidateNested } from "class-validator";
 
 class UserDto {
     @IsEmail({}, { message: 'custom msg email must be an email' })
-    email: string;
+    readonly email: string;
 
     @IsString()
-    password: string;
+    readonly password: string;
 
     @IsString()
     @Expose({ name: 'username' })
-    userName: string;
+    readonly userName: string;
 }
 
 export class CreateUserDto {
     @ValidateNested()
     @Type(() => UserDto) // convert struct api {user: {...}} to User object
-    user: UserDto;
+    readonly user: UserDto;
 } 

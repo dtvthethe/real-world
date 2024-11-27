@@ -3,20 +3,20 @@ import { IsArray, IsString, ValidateNested } from "class-validator";
 
 class ArticleDto {
     @IsString()
-    title: string;
+    readonly title: string;
 
     @IsString()
-    description: string;
+    readonly description: string;
 
     @IsString()
-    body: string;
+    readonly body: string;
 
     @IsArray()
-    tagList: string[];
+    readonly tagList: string[];
 }
 
 export class CreateArticleDto {
     @ValidateNested()
     @Type(() => ArticleDto)
-    article: ArticleDto;
+    readonly article: ArticleDto;
 }

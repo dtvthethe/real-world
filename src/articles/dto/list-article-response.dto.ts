@@ -4,31 +4,31 @@ import { AuthorResponseDto } from "./author-response.dto";
 
 export class ListArticleResponseDto {
     @Expose()
-    slug: string;
+    readonly slug: string;
 
     @Expose()
-    title: string;
+    readonly title: string;
 
     @Expose()
-    description: string;
+    readonly description: string;
 
     @Expose({ name: 'tags' })
     @Transform(({ value }) => value.map((tag: Tag) => tag.name))
-    tagList: string[];
+    readonly tagList: string[];
 
     @Expose({ name: 'createdDate' })
-    createdAt: string;
+    readonly createdAt: string;
 
     @Expose({ name: 'updatedDate' })
-    updatedAt: string;
+    readonly updatedAt: string;
 
     @Expose()
-    favorited: boolean;
+    readonly favorited: boolean;
 
     @Expose()
-    favoritesCount: number;
+    readonly favoritesCount: number;
 
     @Expose()
     @Type(() => AuthorResponseDto)
-    author: AuthorResponseDto;
+    readonly author: AuthorResponseDto;
 }
