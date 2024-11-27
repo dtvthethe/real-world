@@ -14,6 +14,85 @@ export class ArticlesController {
     ) { }
 
     @ApiOperation({
+        summary: 'Get feed',
+        description: 'Get feed in the database',
+    })
+    @ApiQuery({ name: 'limit', type: String, required: false, description: 'limit name', default: 20 })
+    @ApiQuery({ name: 'offset', type: String, required: false, description: 'offset name', default: 0 })
+    @ApiResponse({
+        status: 200,
+        description: 'Successful get feed',
+        schema: {
+            example:
+            {
+                articles: [{
+                    slug: "how-to-train-your-dragon",
+                    title: "How to train your dragon",
+                    description: "Ever wonder how?",
+                    tagList: ["dragons", "training"],
+                    createdAt: "2016-02-18T03:22:56.637Z",
+                    updatedAt: "2016-02-18T03:48:35.824Z",
+                    favorited: false,
+                    favoritesCount: 0,
+                    author: {
+                        username: "jake",
+                        bio: "I work at statefarm",
+                        image: "https://i.stack.imgur.com/xHWG8.jpg",
+                        following: false
+                    }
+                }, {
+                    slug: "how-to-train-your-dragon-2",
+                    title: "How to train your dragon 2",
+                    description: "So toothless",
+                    tagList: ["dragons", "training"],
+                    createdAt: "2016-02-18T03:22:56.637Z",
+                    updatedAt: "2016-02-18T03:48:35.824Z",
+                    favorited: false,
+                    favoritesCount: 0,
+                    author: {
+                        username: "jake",
+                        bio: "I work at statefarm",
+                        image: "https://i.stack.imgur.com/xHWG8.jpg",
+                        following: false
+                    }
+                }],
+                articlesCount: 2
+            },
+        },
+    })
+    @ApiResponse({
+        status: 500,
+        description: 'Internal server error',
+        schema: {
+            example: {
+                statusCode: 500,
+                message: 'Internal server error',
+            },
+        },
+    })
+    @Get('feed')
+    async feed(
+        @Headers() headers,
+        @Query('limit') limit: number = 20,
+        @Query('offset') offset: number = 0
+    ): Promise<any> {
+        try {
+            const result = await this.articlesService.findAll(headers, null, null, null, limit, offset, true);
+
+            return {
+                articles: result,
+                articlesCount: result.length
+            }
+        } catch (error) {
+            console.log(error);
+
+            return {
+                message: error.message
+            }
+        }
+    }
+
+    @ApiOperation({
         summary: 'Create article',
         description: 'Create article in the database',
     })
