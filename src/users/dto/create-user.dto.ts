@@ -6,7 +6,7 @@ class UserDto {
     readonly email: string;
 
     @IsString()
-    readonly password: string;
+    password: string;
 
     @IsString()
     @Expose({ name: 'username' })
