@@ -15,7 +15,7 @@ class UserDto {
     @IsOptional()
     @IsString()
     @IsNotEmpty({ message: 'password is not empty' })
-    readonly password: string;
+    password: string;
 
     @IsOptional()
     @IsString()

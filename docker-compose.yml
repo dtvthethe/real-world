@@ -1,5 +1,19 @@
 version: "3.9"
 services:
+  app:
+    container_name: real-world-container
+    build:
+      context: ./
+      dockerfile: Dockerfile
+    volumes:
+      - .:/app
+    ports:
+      - 3000:3000
+    depends_on:
+      - db
+    networks:
+      - real-world-network
+
   db:
     image: mysql:8.0
     environment:
@@ -9,3 +23,9 @@ services:
       - ./database:/var/lib/mysql
     ports:
       - 13306:3306
+    networks:
+      - real-world-network
+
+networks:
+  real-world-network:
+    driver: bridge

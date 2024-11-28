@@ -8,7 +8,7 @@ async function bootstrap() {
 
   const config = new DocumentBuilder()
     .setTitle('Real World')
-    .setDescription('Real World API NestJS')
+    .setDescription('Real World API NestJS Documentation')
     .setVersion('1.0')
     // .addTag('api')
     // .addBearerAuth(

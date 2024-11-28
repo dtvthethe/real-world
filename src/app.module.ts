@@ -14,8 +14,8 @@ import { ProfileModule } from './profile/profile.module';
   imports: [
     TypeOrmModule.forRoot({
       type: 'mysql',
-      host: 'localhost',
-      port: 13306,
+      host: 'db',
+      port: 3306,
       username: 'root',
       password: 'Aa@123456',
       database: 'real-world',
