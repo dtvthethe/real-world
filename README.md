@@ -1,4 +1,9 @@
 # Build docker
+Generate .env files
+```
+cp .env.dist .env
+```
+
 Build Docker:
 ```
 docker-compose build
