@@ -10,6 +10,13 @@ jobs:
     runs-on: ubuntu-22.04 # phiên bản ubuntu
 
     steps: # build trc trên git để xem có lỗi ko trc khi đưa lên server
+    - name: Check OpenSSH Version
+      run: ssh -V
+
+    - name: Debug SSH Key
+      run: |
+        echo "$SSH_PRIVATE_KEY" | tr -d '\r' | ssh-keygen -lf -
+
     - name: Checkout code
       uses: actions/checkout@v3 # đây là bước lấy code nhánh main về 
 
@@ -33,7 +40,7 @@ jobs:
         mkdir -p ~/.ssh
         echo $SSH_PRIVATE_KEY > ~/.ssh/id_rsa
         chmod 600 ~/.ssh/id_rsa
-        ssh -tt -o StrictHostKeyChecking=no -p 22 ubuntu@13.250.6.92 << EOF
+        ssh -tt -o StrictHostKeyChecking=no -p 22 ubuntu@$EC2_PUBLIC_IP << EOF
           mkdir -p ~/real-world
           echo "$ENV_FILE" > ~/real-world/.env
           cd ~/real-world
