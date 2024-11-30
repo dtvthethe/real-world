@@ -1,0 +1,44 @@
+name: Deploy real-world to AWS EC2
+
+on:
+  push:
+    branches:
+      - main # khi có code đc merge (push) vào nhánh main thì chạy job
+
+jobs:
+  deploy: # đặt tên tùy thích
+    runs-on: ubuntu-22.04 # phiên bản ubuntu
+
+    steps: # build trc trên git để xem có lỗi ko trc khi đưa lên server
+    - name: Checkout code
+      uses: actions/checkout@v3 # đây là bước lấy code nhánh main về 
+
+    - name: Set up Node.js
+      uses: actions/setup-node@v3 # cài đặt môi trường build trên git (nodejs)
+      with:
+        node-version: 18
+
+    - name: Install dependencies
+      run: npm install # cái package cần thiết
+
+    - name: Build project
+      run: npm run build # build project
+
+    - name: Deploy to AWS EC2 # vẫn đang chạy trên máy ảo của github, "ubuntu" là tên username của EC2, "mkdir -p" -p là nếu có thư mục rồi thì ko tạo nữa
+      env:
+        SSH_PRIVATE_KEY: ${{ secrets.EC2_SSH_KEY }}
+        ENV_FILE: ${{ secrets.ENV_FILE }}
+        EC2_PUBLIC_IP: ${{ secrets.EC2_PUBLIC_IP }}
+      run: |
+        mkdir -p ~/.ssh
+        echo "$SSH_PRIVATE_KEY" > ~/.ssh/id_rsa
+        chmod 600 ~/.ssh/id_rsa
+        ssh -o StrictHostKeyChecking=no ubuntu@$EC2_PUBLIC_IP << 'EOF'
+          mkdir -p ~/real-world
+          echo "$ENV_FILE" > ~/real-world/.env
+          cd ~/real-world
+          git pull origin main
+          npm install
+          npm run build
+          pm2 restart all
+        EOF
