@@ -10,6 +10,9 @@ jobs:
     runs-on: ubuntu-22.04 # phiên bản ubuntu
 
     steps: # build trc trên git để xem có lỗi ko trc khi đưa lên server
+    - name: Debug EC2_PUBLIC_IP
+      run: echo "EC2_PUBLIC_IP=${{ secrets.EC2_PUBLIC_IP }}"
+
     - name: Checkout code
       uses: actions/checkout@v3 # đây là bước lấy code nhánh main về 
 
@@ -33,7 +36,7 @@ jobs:
         mkdir -p ~/.ssh
         echo "$SSH_PRIVATE_KEY" > ~/.ssh/id_rsa
         chmod 600 ~/.ssh/id_rsa
-        ssh -o StrictHostKeyChecking=no ubuntu@$EC2_PUBLIC_IP << 'EOF'
+        ssh -tt -o StrictHostKeyChecking=no -p 22 ubuntu@$EC2_PUBLIC_IP << EOF
           mkdir -p ~/real-world
           echo "$ENV_FILE" > ~/real-world/.env
           cd ~/real-world
