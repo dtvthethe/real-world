@@ -33,7 +33,7 @@ jobs:
         mkdir -p ~/.ssh
         echo $SSH_PRIVATE_KEY > ~/.ssh/id_rsa
         chmod 600 ~/.ssh/id_rsa
-        ssh -tt -o StrictHostKeyChecking=no -p 22 ubuntu@ ${{ secrets.EC2_PUBLIC_IP }} << EOF
+        ssh -tt -o StrictHostKeyChecking=no -p 22 ubuntu@${{ secrets.EC2_PUBLIC_IP }} << EOF
           mkdir -p ~/real-world
           echo "$ENV_FILE" > ~/real-world/.env
           cd ~/real-world
