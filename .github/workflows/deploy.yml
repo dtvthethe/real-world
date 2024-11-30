@@ -34,13 +34,15 @@ jobs:
         echo "${{ secrets.EC2_SSH_KEY }}" > ~/.ssh/id_rsa
         chmod 600 ~/.ssh/id_rsa
         ssh -tt -o StrictHostKeyChecking=no -p 22 ${{ secrets.EC2_USER }}@${{ secrets.EC2_PUBLIC_IP }} << EOF
-          pm2 stop all
+          pm2 stop all --no-daemon
           rm -rf ~/real-world
           git clone git@github.com:dtvthethe/real-world.git
           cd ~/real-world
           echo "$ENV_FILE" > .env
           git pull origin main
-          npm install
+          npm install --silent
           npm run build
-          pm2 restart all
+          pm2 restart all --no-daemon
+          exit
         EOF
+        exit
