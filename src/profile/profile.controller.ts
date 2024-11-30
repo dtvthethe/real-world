@@ -44,19 +44,12 @@ export class ProfileController {
     })
     @Get('')
     async profile(@Headers() header): Promise<any> {
-        try {
-            const result = await this.profileService.detail(header);
-            const userResponseTransform = plainToInstance(CreateUserResponseDto, result, { excludeExtraneousValues: true });
+        const result = await this.profileService.detail(header);
+        const userResponseTransform = plainToInstance(CreateUserResponseDto, result, { excludeExtraneousValues: true });
 
-            return {
-                user: userResponseTransform
-            };
-        } catch (err) {
-            console.log(err);
-            return {
-                message: err.message
-            };
-        }
+        return {
+            user: userResponseTransform
+        };
     }
 
     @ApiOperation({
@@ -104,17 +97,10 @@ export class ProfileController {
     })
     @Put('')
     async update(@Headers() header, @Body() body: UpdateUserDto): Promise<any> {
-        try {
-            const user = await this.profileService.update(header, body);
+        const user = await this.profileService.update(header, body);
 
-            return {
-                user
-            };
-        } catch (err) {
-            console.log(err);
-            return {
-                message: err.message
-            };
-        }
+        return {
+            user
+        };
     }
 }

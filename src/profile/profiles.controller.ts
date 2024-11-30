@@ -40,18 +40,11 @@ export class ProfilesController {
     })
     @Get('/:username')
     async find(@Headers() headers, @Param('username') username: string): Promise<any> {
-        try {
-            const userDto = await this.profileService.findByUsername(headers, username);
+        const userDto = await this.profileService.findByUsername(headers, username);
 
-            return {
-                profile: userDto
-            };
-        } catch (err) {
-            console.log(err);
-            return {
-                message: err.message
-            };
-        }
+        return {
+            profile: userDto
+        };
     }
 
     @ApiOperation({
@@ -84,18 +77,11 @@ export class ProfilesController {
     })
     @Post('/:username/follow')
     async follow(@Headers() headers, @Param('username') username: string): Promise<any> {
-        try {
-            const profile = await this.profileService.follow(headers, username);
+        const profile = await this.profileService.follow(headers, username);
 
-            return {
-                profile
-            };
-        } catch (error) {
-            console.log(error);
-            return {
-                message: error.message
-            };
-        }
+        return {
+            profile
+        };
     }
 
     @ApiOperation({
@@ -128,17 +114,10 @@ export class ProfilesController {
     })
     @Delete('/:username/follow')
     async unfollow(@Headers() headers, @Param('username') username: string): Promise<any> {
-        try {
-            const profile = await this.profileService.unfollow(headers, username);
+        const profile = await this.profileService.unfollow(headers, username);
 
-            return {
-                profile
-            };
-        } catch (error) {
-            console.log(error);
-            return {
-                message: error.message
-            };
-        }
+        return {
+            profile
+        };
     }
 }
