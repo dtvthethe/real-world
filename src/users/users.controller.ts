@@ -58,23 +58,16 @@ export class UsersController {
     })
     @Post('')
     async create(@Body() userDto: CreateUserDto): Promise<any> {
-        try {
-            // convert username to userName
-            const userRequestTransform = plainToInstance(CreateUserDto, userDto);
-            // save user to DB
-            const result = await this.usersService.create(userRequestTransform);
-            // format respone
-            const userResponseTransform = plainToInstance(CreateUserResponseDto, result, { excludeExtraneousValues: true });
+        // convert username to userName
+        const userRequestTransform = plainToInstance(CreateUserDto, userDto);
+        // save user to DB
+        const result = await this.usersService.create(userRequestTransform);
+        // format respone
+        const userResponseTransform = plainToInstance(CreateUserResponseDto, result, { excludeExtraneousValues: true });
 
-            return {
-                user: userResponseTransform
-            };
-        } catch (err) {
-            console.log(err);
-            return {
-                message: 'save fail'
-            };
-        }
+        return {
+            user: userResponseTransform
+        };
     }
 
     @ApiOperation({
@@ -121,19 +114,13 @@ export class UsersController {
     })
     @Post('login')
     async login(@Body() userDto: LoginUserDto): Promise<any> {
-        try {
-            const userRequestTransform = plainToInstance(LoginUserDto, userDto);
-            const result = await this.usersService.login(userRequestTransform)
-            const userResponseTransform = plainToInstance(CreateUserResponseDto, result, { excludeExtraneousValues: true });
+        const userRequestTransform = plainToInstance(LoginUserDto, userDto);
+        const result = await this.usersService.login(userRequestTransform)
+        const userResponseTransform = plainToInstance(CreateUserResponseDto, result, { excludeExtraneousValues: true });
 
-            return {
-                user: userResponseTransform
-            };
-        } catch (err) {
-            console.log(err);
-            return {
-                message: 'save fail'
-            };
-        }
+        return {
+            user: userResponseTransform
+        };
+
     }
 }

@@ -76,19 +76,11 @@ export class ArticlesController {
         @Query('limit') limit: number = 20,
         @Query('offset') offset: number = 0
     ): Promise<any> {
-        try {
-            const result = await this.articlesService.findAll(headers, null, null, null, limit, offset, true);
+        const result = await this.articlesService.findAll(headers, null, null, null, limit, offset, true);
 
-            return {
-                articles: result,
-                articlesCount: result.length
-            }
-        } catch (error) {
-            console.log(error);
-
-            return {
-                message: error.message
-            }
+        return {
+            articles: result,
+            articlesCount: result.length
         }
     }
 
@@ -148,18 +140,10 @@ export class ArticlesController {
     })
     @Post('')
     async create(@Headers() headers, @Body() articleDto: CreateArticleDto): Promise<any> {
-        try {
-            const result = await this.articlesService.create(headers, articleDto);
+        const result = await this.articlesService.create(headers, articleDto);
 
-            return {
-                article: result
-            }
-        } catch (error) {
-            console.log(error);
-
-            return {
-                message: error.message
-            }
+        return {
+            article: result
         }
     }
 
@@ -216,18 +200,10 @@ export class ArticlesController {
     })
     @Put(':slug')
     async update(@Headers() headers, @Param('slug') slug: string, @Body() articleDto: UpdateArticleDto): Promise<any> {
-        try {
-            const result = await this.articlesService.update(headers, slug, articleDto);
+        const result = await this.articlesService.update(headers, slug, articleDto);
 
-            return {
-                article: result
-            }
-        } catch (error) {
-            console.log(error);
-
-            return {
-                message: error.message
-            }
+        return {
+            article: result
         }
     }
 
@@ -267,24 +243,16 @@ export class ArticlesController {
     })
     @Delete(':slug')
     async delete(@Headers() headers, @Param('slug') slug: string): Promise<any> {
-        try {
-            const result = await this.articlesService.delete(headers, slug);
+        const result = await this.articlesService.delete(headers, slug);
 
-            if (result.affected) {
-                return {
-                    message: 'Delete success'
-                }
-            }
-
+        if (result.affected) {
             return {
-                message: 'Delete fail'
+                message: 'Delete success'
             }
-        } catch (error) {
-            console.log(error);
+        }
 
-            return {
-                message: error.message
-            }
+        return {
+            message: 'Delete fail'
         }
     }
 
@@ -357,19 +325,11 @@ export class ArticlesController {
         @Query('limit') limit: number = 20,
         @Query('offset') offset: number = 0
     ): Promise<any> {
-        try {
-            const result = await this.articlesService.findAll(headers, tag, author, favorited, limit, offset);
+        const result = await this.articlesService.findAll(headers, tag, author, favorited, limit, offset);
 
-            return {
-                articles: result,
-                articlesCount: result.length
-            }
-        } catch (error) {
-            console.log(error);
-
-            return {
-                message: error.message
-            }
+        return {
+            articles: result,
+            articlesCount: result.length
         }
     }
 
@@ -414,18 +374,10 @@ export class ArticlesController {
     })
     @Get(':slug')
     async find(@Headers() headers, @Param('slug') slug: string): Promise<any> {
-        try {
-            const result = await this.articlesService.findOneBySlug(headers, slug);
+        const result = await this.articlesService.findOneBySlug(headers, slug);
 
-            return {
-                article: result
-            }
-        } catch (error) {
-            console.log(error);
-
-            return {
-                message: error.message
-            }
+        return {
+            article: result
         }
     }
 
@@ -477,19 +429,11 @@ export class ArticlesController {
     })
     @Post(':slug/comments')
     async createComment(@Headers() headers, @Param('slug') slug: string, @Body() commentDto: CreateCommentDto): Promise<any> {
-        try {
-            const result = await this.articlesService.createComment(headers, slug, commentDto);
+        const result = await this.articlesService.createComment(headers, slug, commentDto);
 
-            return {
-                comment: result
-            };
-        } catch (error) {
-            console.log(error);
-
-            return {
-                message: error.message
-            }
-        }
+        return {
+            comment: result
+        };
     }
 
     @ApiOperation({
@@ -528,19 +472,11 @@ export class ArticlesController {
     })
     @Get(':slug/comments')
     async comments(@Headers() headers, @Param('slug') slug: string): Promise<any> {
-        try {
-            const result = await this.articlesService.getComments(headers, slug);
+        const result = await this.articlesService.getComments(headers, slug);
 
-            return {
-                comments: result
-            };
-        } catch (error) {
-            console.log(error);
-
-            return {
-                message: error.message
-            }
-        }
+        return {
+            comments: result
+        };
     }
 
     @ApiOperation({
@@ -579,24 +515,16 @@ export class ArticlesController {
     })
     @Delete(':slug/comments/:id')
     async removeComment(@Headers() headers, @Param('slug') slug: string, @Param('id') id: number): Promise<any> {
-        try {
-            const result = await this.articlesService.deleteComment(headers, slug, id);
+        const result = await this.articlesService.deleteComment(headers, slug, id);
 
-            if (result.affected) {
-                return {
-                    message: 'Delete success'
-                }
-            }
-
+        if (result.affected) {
             return {
-                message: 'Delete fail'
+                message: 'Delete success'
             }
-        } catch (error) {
-            console.log(error);
+        }
 
-            return {
-                message: error.message
-            }
+        return {
+            message: 'Delete fail'
         }
     }
 
@@ -641,18 +569,10 @@ export class ArticlesController {
     })
     @Post(':slug/favorite')
     async favorite(@Headers() headers, @Param('slug') slug: string): Promise<any> {
-        try {
-            const result = await this.articlesService.favorite(headers, slug);
+        const result = await this.articlesService.favorite(headers, slug);
 
-            return {
-                article: result
-            }
-        } catch (error) {
-            console.log(error);
-
-            return {
-                message: error.message
-            }
+        return {
+            article: result
         }
     }
 
@@ -697,18 +617,10 @@ export class ArticlesController {
     })
     @Delete(':slug/favorite')
     async unfavorite(@Headers() headers, @Param('slug') slug: string): Promise<any> {
-        try {
-            const result = await this.articlesService.unfavorite(headers, slug);
+        const result = await this.articlesService.unfavorite(headers, slug);
 
-            return {
-                article: result
-            }
-        } catch (error) {
-            console.log(error);
-
-            return {
-                message: error.message
-            }
+        return {
+            article: result
         }
     }
 }

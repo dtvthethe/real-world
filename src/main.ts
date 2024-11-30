@@ -2,10 +2,14 @@ import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
 import { ValidationPipe } from '@nestjs/common';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
+import { GlobalExceptionFilter } from './filters/global-exception.filter';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
+  // Global exception filter
+  app.useGlobalFilters(new GlobalExceptionFilter());
 
+  // Swagger
   const config = new DocumentBuilder()
     .setTitle('Real World')
     .setDescription('Real World API NestJS Documentation')
