@@ -9,12 +9,13 @@ export class UserFollow {
   @PrimaryColumn({ name: 'followee_id' })
   followeeId: number;
 
-  // ng khác theo dõi mình
+  // follower -> followee: chủ thể đang theo dõi ai
+  // followee -> follower: ai đang theo dõi chủ thể
+
   @ManyToOne(() => User, (user) => user.following, { onDelete: 'CASCADE' })
   @JoinColumn({ name: "follower_id" })
   follower: User;
 
-  // (current user login) mình theo dõi ng khác
   @ManyToOne(() => User, (user) => user.followers, { onDelete: 'CASCADE' })
   @JoinColumn({ name: "followee_id" })
   followee: User;

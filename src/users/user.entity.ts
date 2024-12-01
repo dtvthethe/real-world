@@ -44,11 +44,11 @@ export class User {
   @ManyToMany(() => Article, (article) => article.userFavorites)
   articleFavorites?: Article[];
 
-  // ai đang theo dõi mình, ko unffollow dc
+  // người mà chủ thể  đang theo dõi
   @OneToMany(() => UserFollow, (userFollows) => userFollows.follower)
   following: UserFollow[];
 
-  // mình đang theo dõi ai, unffollow dc
+  // người khác theo dõi mình (fan của chủ thể)
   @OneToMany(() => UserFollow, (userFollows) => userFollows.followee)
   followers: UserFollow[];
 }

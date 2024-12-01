@@ -12,7 +12,6 @@ export class GlobalExceptionFilter implements ExceptionFilter {
         const ctx = host.switchToHttp();
         const response = ctx.getResponse();
 
-        // TODO: VSCode ko scan dc class TokenExpiredError
         switch (true) {
             case response instanceof TokenExpiredError:
             case response instanceof JsonWebTokenError:
