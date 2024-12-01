@@ -137,7 +137,6 @@ export class ArticlesService {
             }
         }
 
-        // TODO: co nen thuc hien query ntn nay ko
         const query = this.articlesRepository.createQueryBuilder('article');
 
         // join
@@ -352,7 +351,6 @@ export class ArticlesService {
         await this.articlesRepository.save(article);
         const user = await this.profileService.buildUserByUsername(headers, article.author.userName);
 
-        // TODO: article.userFavorites.length doesn't work
         return plainToInstance(
             CreateArticleResponseDto,
             {
@@ -381,7 +379,6 @@ export class ArticlesService {
             throw new NotFoundException('Article not found');
         }
 
-        // TODO: neu favotire la 1M thi find lau
         const userFavorite = article.userFavorites.find(user => user.id == userLogin.id);
 
         if (userFavorite == undefined) {
@@ -392,7 +389,6 @@ export class ArticlesService {
         await this.articlesRepository.save(article);
         const user = await this.profileService.buildUserByUsername(headers, article.author.userName);
 
-        // TODO: article.userFavorites.length doesn't work
         return plainToInstance(
             CreateArticleResponseDto,
             {
